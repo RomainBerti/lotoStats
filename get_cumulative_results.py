@@ -44,10 +44,10 @@ for line in lines_of_strings:
 
 column_of_prob = [line[1]/total for line in twod_array if isinstance(line[0], int)]
 '''
-list_of_draws = []
-while len(list_of_draws) < 6:
-    new_draw = choices(range(1, 50), probability_list)
-    if new_draw not in list_of_draws:
-        list_of_draws.append(str(new_draw))
-
-print(list_of_draws)
+for i in range(27):
+    list_of_draws = []
+    while len(list_of_draws) < 7:
+        new_draw = choices(range(1, 50), probability_list)
+        if new_draw[0] not in list_of_draws:
+            list_of_draws.append(new_draw[0])
+    print(f'{i}: {list_of_draws}')
