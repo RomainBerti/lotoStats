@@ -1,7 +1,6 @@
 import requests
 from html2csv import Converter
 from random import choices
-from numpy import arange
 
 url = 'https://loteries.espacejeux.com/en/lotteries/lotto-max?outil=statistiques-223#res'
 
@@ -20,13 +19,18 @@ for table in output:
         all_time_freq_order = table
 
 with open('loto_table_num_order.csv', 'w') as file:
-    for csv_string in all_time_num_order:
-        file.writelines(csv_string)
+    table = all_time_num_order[0].strip().split('\r\n')
+    table = [line.split(',') for line in table]
+    total = sum(int(element[1]) for element in table[2:-1])
+    probability_list = [float(str(int(line[1])/total)[:6]) for line in table if line[0].isdigit()]
+    table = '\r\n'.join([','.join(line + [f'{str(int(line[1])/total)[:6]}']) if line[0].isdigit() else ','.join(line)
+                         for line in table])
+    file.writelines(table)
 
 with open('loto_table_freq_order.csv', 'w') as file:
     for csv_string in all_time_freq_order:
         file.writelines(csv_string)
-
+'''
 total = 0
 twod_array = []
 lines_of_strings = all_time_num_order[0].split('\n')
@@ -39,10 +43,10 @@ for line in lines_of_strings:
         twod_array.append([x for x in line.strip('\r').split(',')])
 
 column_of_prob = [line[1]/total for line in twod_array if isinstance(line[0], int)]
-
+'''
 list_of_draws = []
 while len(list_of_draws) < 6:
-    new_draw = choices(arange(1, 50), column_of_prob)
+    new_draw = choices(range(1, 50), probability_list)
     if new_draw not in list_of_draws:
         list_of_draws.append(str(new_draw))
 
